@@ -16,9 +16,9 @@ DaisyFile talks to DaisyOS through the ESP8266 WiFi modem.
 | Unit       | Runs on     | Role                                        |
 |------------|-------------|---------------------------------------------|
 | DaisyFile  | Host PC     | This repo. File storage over TCP            |
-| [DaisyOS](https://github.com/pineconecomputer/DaisyOS) | SAM3X (Due) | BASIC, editor, terminal, keyboard |
+| [DaisyOS](https://github.com/pineconecomputer/DaisyOS) | SAM3X (Due) | BASIC, editor, terminal, Z-machine, keyboard |
 | [DaisyVideo](https://github.com/pineconecomputer/DaisyVideo) | ATmega2560 | 40×25 text + graphics, composite video out |
-| [DaisySound](https://github.com/pineconecomputer/DaisySound) | ATmega328 | 3-voice synthesizer with envelopes and noise |
+| [DaisySound](https://github.com/pineconecomputer/DaisySound) | ATmega328 | 3-voice synthesizer: 2× pulse/PWM + noise |
 | ESP8266    | —           | WiFi modem (stock Zimodem firmware)         |
 
 ## Running
