@@ -83,16 +83,25 @@ modem is in pass-through mode while connected.
 
 ## 4. List files
 
+The Daisy has two drives: its SD card, `SD:`, and this server, `NET:`. The
+SD card is the current drive at start-up, so switch to the server first:
+
 ```basic
+CHDIR "NET:"
 CAT
 ```
 
-`CATALOG` is the same command spelled out. The listing shows the current
-directory path, then subdirectories marked `<DIR>`, then files with their
-sizes in bytes:
+From then on every file command in this guide goes to the server. A name
+can also carry its drive, as in `LOAD "NET:hello.bas"`, without changing the
+current drive, and `COPY "NET:hello.bas","SD:hello.bas"` copies a file onto
+the card.
+
+`CATALOG` is the same command spelled out. The listing shows the drive and
+current directory, then subdirectories marked `<DIR>`, then files with
+their sizes in bytes:
 
 ```
-/
+NET:/
 GAMES/           <DIR>
 UTILS/           <DIR>
 HELLO.BAS        84
@@ -152,7 +161,7 @@ Space pages forward, Backspace back, `:` searches, BREAK quits.
 ```basic
 MKDIR "games"
 CHDIR "games"
-CAT                   ← now shows /games
+CAT                   ← now shows NET:/games
 SAVE "invaders.bas"
 CHDIR ".."            ← back up one level
 CHDIR "/"             ← jump to the root
@@ -177,14 +186,16 @@ current directory.
 ## 9. Data files
 
 Beyond whole programs, a running program can read and write files on the
-host through numbered channels 0–3:
+host through numbered channels 0–3. Names are on the Daisy's current drive,
+which is the server after the `CHDIR "NET:"` in section 4; the `NET:`
+prefixes below make the example work whichever drive is current:
 
 ```basic
-10 FOPEN 0, "scores.txt", "W"
-20 FPRINT 0, "ALICE,4200"; CHR$(10)
-30 FPRINT 0, "BOB,3150"; CHR$(10)
+10 FOPEN 0, "NET:scores.txt", "W"
+20 FPRINT 0, "ALICE,4200"
+30 FPRINT 0, "BOB,3150"
 40 FCLOSE 0
-50 FOPEN 0, "scores.txt", "R"
+50 FOPEN 0, "NET:scores.txt", "R"
 60 FINPUT 0, A$
 70 FINPUT 0, B$
 80 FCLOSE 0
@@ -192,7 +203,7 @@ host through numbered channels 0–3:
 ```
 
 Modes are `"R"` read, `"W"` write (truncates an existing file), and
-`"A"` append. `FPRINT` appends no newline, hence the explicit `CHR$(10)`.
+`"A"` append. Each `FPRINT` writes one line; the newline is added for you.
 The remaining channel operations are `FGET` and `FPUT` for single bytes,
 `FSEEK` to move the cursor, `FREWIND` to return to the start, and
 `FBYTES(channel)` for the bytes remaining.

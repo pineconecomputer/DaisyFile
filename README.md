@@ -90,12 +90,17 @@ the reader resynchronizes on the next `SOP`.
 | `0x1A` | `CHDIR`    | Change the per-connection working directory |
 | `0x1B` | `MKDIR`    | Create a directory                         |
 | `0x1C` | `FREWIND`  | Seek a channel back to byte 0              |
+| `0x1D` | `FREAD`    | Read up to N raw bytes from a read channel |
+| `0x1E` | `FWRITE`   | Write raw bytes, with no newline added     |
 
 Responses vary by command: a bare `end` line for silent success, a
 single `ACK` (`0x06`) or `NAK` (`0x15`) byte for the channel operations,
-raw counts for `FBYTES` and `FGET`, or a `print "?...ERROR"` line that
-DaisyBASIC executes so the message renders as a normal `?ERROR` to the
-user. `CATALOG`, `LOAD`, and `SAVE` are streaming commands with their own
+raw counts for `FBYTES` and `FGET`, `ACK`, a count byte and that many
+bytes for `FREAD` (a count of 0 means end of file), or a
+`print "?...ERROR"` line. DaisyOS's network drive (`netfs.cpp`) reads that
+line and turns it into the matching `?ERROR` itself, so the wording of
+those lines (`FILE NOT FOUND`, `FILE EXISTS`, `DIR NOT FOUND`,
+`DIR EXISTS`) is part of the protocol. `CATALOG`, `LOAD`, and `SAVE` are streaming commands with their own
 multi-line, ACK-paced formats; see the `cmd_*` docstrings in
 `daisyfile.py`.
 

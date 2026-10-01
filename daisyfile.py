@@ -94,6 +94,8 @@ CMD_COPY     = 0x19
 CMD_CHDIR    = 0x1A
 CMD_MKDIR    = 0x1B
 CMD_FREWIND  = 0x1C
+CMD_FREAD    = 0x1D
+CMD_FWRITE   = 0x1E
 
 LOAD_BATCH   = 8   # program lines per ACK on LOAD (server → DaisyOS)
 SAVE_BATCH   = 1   # per-line ACK on SAVE; Zimodem buffers bursts so batching hangs
@@ -664,6 +666,49 @@ class Client:
             log.error("FREWIND: %s", exc)
             self.conn.sendall(bytes([NAK_BYTE]))
 
+    def cmd_fread(self, payload: bytes) -> None:
+        """FREAD ch, n. Read up to `n` bytes from a read-mode channel.
+
+        Replies ``ACK, count, bytes...``; a count of 0 means end of file.
+        NAK if the channel is not open for reading.
+        """
+        if len(payload) < 2:
+            self.conn.sendall(bytes([NAK_BYTE]))
+            return
+        channel = payload[0]
+        want    = payload[1]
+        if channel not in self._files or self._modes.get(channel, 0) != 0:
+            log.warning("FREAD: ch=%d not open for reading", channel)
+            self.conn.sendall(bytes([NAK_BYTE]))
+            return
+        try:
+            data = self._files[channel].read(want)
+        except OSError as exc:
+            log.error("FREAD: %s", exc)
+            self.conn.sendall(bytes([NAK_BYTE]))
+            return
+        self.conn.sendall(bytes([ACK_BYTE, len(data)]) + data)
+
+    def cmd_fwrite(self, payload: bytes) -> None:
+        """FWRITE ch, bytes. Write raw bytes to a write- or append-mode
+        channel; unlike FPRINT nothing is added. ACKs or NAKs.
+        """
+        if not payload:
+            self.conn.sendall(bytes([NAK_BYTE]))
+            return
+        channel = payload[0]
+        if channel not in self._files or self._modes.get(channel, 1) == 0:
+            log.warning("FWRITE: ch=%d not open for writing", channel)
+            self.conn.sendall(bytes([NAK_BYTE]))
+            return
+        try:
+            self._files[channel].write(payload[1:])
+            self._files[channel].flush()
+            self.send_ack()
+        except OSError as exc:
+            log.error("FWRITE: %s", exc)
+            self.conn.sendall(bytes([NAK_BYTE]))
+
     def cmd_fbytes(self, payload: bytes) -> None:
         """FBYTES ch. Reply with a 4-byte big-endian count of bytes
         remaining (read-mode channels only).
@@ -872,6 +917,8 @@ class Client:
                 elif cmd == CMD_FSEEK:    self.cmd_fseek(payload)
                 elif cmd == CMD_FREWIND:  self.cmd_frewind(payload)
                 elif cmd == CMD_FBYTES:   self.cmd_fbytes(payload)
+                elif cmd == CMD_FREAD:    self.cmd_fread(payload)
+                elif cmd == CMD_FWRITE:   self.cmd_fwrite(payload)
                 elif cmd == CMD_DEL:      self.cmd_del(payload)
                 elif cmd == CMD_REN:      self.cmd_ren(payload)
                 elif cmd == CMD_COPY:     self.cmd_copy(payload)
