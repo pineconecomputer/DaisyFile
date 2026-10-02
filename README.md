@@ -9,6 +9,11 @@ directory on the host.
 The framed binary protocol is the one DaisyOS speaks in
 `comm_messages.cpp`, carried over a TCP socket instead of a UART.
 
+On Daisy the server is drive `NET:`, next to the SD card on the Due's SPI
+bus, drive `SD:`. Both sit behind DaisyOS's file services and store files
+in the same format, so programs use either one the same way and
+`COPY "NET:X.BAS","SD:X.BAS"` moves a file between them.
+
 ## Companion firmware
 
 DaisyFile talks to DaisyOS through the ESP8266 WiFi modem.
