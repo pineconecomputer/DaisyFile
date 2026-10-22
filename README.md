@@ -12,7 +12,8 @@ The framed binary protocol is the one DaisyOS speaks in
 On Daisy the server is drive `NET:`, next to the SD card on the Due's SPI
 bus, drive `SD:`. Both sit behind DaisyOS's file services and store files
 in the same format, so programs use either one the same way and
-`COPY "NET:X.BAS","SD:X.BAS"` moves a file between them.
+`COPY "NET:X.BAS","SD:X.BAS"` moves a file between them. File names go in
+quotes, as here, or the colon after the drive would end the statement.
 
 ## Companion firmware
 

@@ -96,6 +96,11 @@ can also carry its drive, as in `LOAD "NET:hello.bas"`, without changing the
 current drive, and `COPY "NET:hello.bas","SD:hello.bas"` copies a file onto
 the card.
 
+File names go in quotes, as they are throughout this guide. In a program
+the colon after `NET` would otherwise end the statement, and
+`LOAD NET:hello.bas` would look for a file called `NET`. A name can also be
+a string variable or expression, such as `LOAD "NET:"+N$`.
+
 `CATALOG` is the same command spelled out. The listing shows the drive and
 current directory, then subdirectories marked `<DIR>`, then files with
 their sizes in bytes:
