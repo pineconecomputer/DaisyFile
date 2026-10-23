@@ -118,8 +118,10 @@ Daisys can be served concurrently.
 
 All filenames, including ones with path components and anything reached
 via `CHDIR`, are resolved against the storage directory and checked to
-confirm they stay inside it. Paths that escape through `..` or an
-absolute prefix are rejected as `?FILE NOT FOUND` or `?DIR NOT FOUND`.
+confirm they stay inside it. A name starting with `/` starts at the
+storage directory, as one on the SD card starts at the card's root, so
+`NET:/GAMES/X.BAS` is `GAMES/X.BAS` there. Paths that escape through `..`
+are rejected as `?FILE NOT FOUND` or `?DIR NOT FOUND`.
 
 DaisyFile has no authentication and no encryption.
 

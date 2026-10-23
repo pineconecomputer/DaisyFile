@@ -170,6 +170,7 @@ CAT                   ← now shows NET:/games
 SAVE "invaders.bas"
 CHDIR ".."            ← back up one level
 CHDIR "/"             ← jump to the root
+LOAD "/games/invaders.bas"   ← a name from the root, wherever you are
 ```
 
 The current directory belongs to the connection, not the server: it

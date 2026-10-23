@@ -50,10 +50,11 @@ PATH SAFETY
 ===========
 
 Filenames may contain path components (e.g. "subdir/file.bas") and the
-client can navigate via CHDIR. `safe_path` resolves any filename against
-(file_dir / cwd) and verifies the result stays inside file_dir. Paths
-that resolve outside file_dir (via `..` or absolute) raise ValueError,
-which handlers translate to ?FILE NOT FOUND or ?MKDIR ERROR.
+client can navigate via CHDIR. `safe_path` resolves a filename against
+(file_dir / cwd), or against file_dir itself if it starts with "/", as
+CHDIR does, and verifies the result stays inside file_dir. Paths that
+resolve outside file_dir (via `..`) raise ValueError, which handlers
+translate to ?FILE NOT FOUND or ?MKDIR ERROR.
 
 USAGE
 =====
@@ -202,10 +203,17 @@ class Client:
     # ── Path helpers ──────────────────────────────────────────────────────
 
     def safe_path(self, filename: str) -> Path:
-        """Resolve `filename` against (file_dir / cwd) and verify it
-        stays inside file_dir. Raises ValueError on path escape.
+        """Resolve `filename` against (file_dir / cwd), or against file_dir
+        if it starts with "/" (NET:/GAMES/X.BAS is GAMES/X.BAS in the file
+        root, as on the SD card), and verify it stays inside file_dir.
+        Raises ValueError on path escape.
         """
-        target = (self.file_dir / self.cwd / filename).resolve()
+        # Joined as it is, an absolute name would replace file_dir and point
+        # into the host's own root.
+        if filename.startswith("/"):
+            target = (self.file_dir / filename.lstrip("/")).resolve()
+        else:
+            target = (self.file_dir / self.cwd / filename).resolve()
         root   = self.file_dir.resolve()
         try:
             target.relative_to(root)
