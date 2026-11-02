@@ -15,6 +15,10 @@ in the same format, so programs use either one the same way and
 `COPY "NET:X.BAS","SD:X.BAS"` moves a file between them. File names go in
 quotes, as here, or the colon after the drive would end the statement.
 
+On PyCone, the Daisy's Python firmware, the same server is the folder
+`/net`, after `daisy.wifi(...)` and `daisy.netconnect(...)`: Python's own
+`open`, `os.listdir` and `import` use it as they use the card's `/sd`.
+
 ## Companion firmware
 
 DaisyFile talks to DaisyOS through the ESP8266 WiFi modem.
@@ -22,7 +26,7 @@ DaisyFile talks to DaisyOS through the ESP8266 WiFi modem.
 | Unit       | Runs on     | Role                                        |
 |------------|-------------|---------------------------------------------|
 | DaisyFile  | Host PC     | This repo. File storage over TCP            |
-| [DaisyOS](https://github.com/pineconecomputer/DaisyOS) | SAM3X (Due) | BASIC, editor, terminal, Z-machine, keyboard |
+| [DaisyOS](https://github.com/pineconecomputer/DaisyOS) | SAM3X (Due) | BASIC or PyCone, editor, terminal, Z-machine, keyboard |
 | [DaisyVideo](https://github.com/pineconecomputer/DaisyVideo) | ATmega2560 | 40×25 text + graphics, composite video out |
 | [DaisySound](https://github.com/pineconecomputer/DaisySound) | ATmega328 | 3-voice synthesizer: 2× pulse/PWM + noise |
 | ESP8266    | —           | WiFi modem (stock Zimodem firmware)         |

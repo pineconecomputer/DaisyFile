@@ -259,5 +259,6 @@ PRINT A$
 ## Where to go next
 
 - [DaisyBASIC Programmer's Reference](https://github.com/pineconecomputer/DaisyOS/blob/main/DAISYBASIC_REFERENCE.md) — every command in full, including the `NETPRINT` / `NETGET` / `NETINPUT` raw-socket calls
+- [PyCone Reference](https://github.com/pineconecomputer/DaisyOS/blob/main/PYCONE_REFERENCE.md) — the server from Python, as the folder `/net`
 - [README](README.md) — server options, the wire protocol, and the opcode table
 - [DaisyOS](https://github.com/pineconecomputer/DaisyOS) — the firmware on the other end of the link
